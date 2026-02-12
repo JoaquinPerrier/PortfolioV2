@@ -6,7 +6,7 @@ import { HiBriefcase } from "react-icons/hi";
 
 const experiences = [
   {
-    period: "2025 – 2026",
+    period: "Jun 2025 –  Feb 2026",
     role: "Full Stack Developer",
     company: "Edundy",
     location: "Remote - USA",
@@ -20,7 +20,7 @@ const experiences = [
     current: true,
   },
   {
-    period: "2024 – 2026",
+    period: " Oct 2024 – Jul 2025",
     role: "Full Stack Developer",
     company: "Owner Built",
     location: "Remote - USA",
@@ -35,7 +35,7 @@ const experiences = [
     current: false,
   },
   {
-    period: "2023 – 2025",
+    period: "Sep 2023 – Apr 2025",
     role: "Frontend Developer / Full Stack Support",
     company: "Mutual AMR",
     location: "Rosario, Argentina",
@@ -49,7 +49,7 @@ const experiences = [
     current: false,
   },
   {
-    period: "2022 – 2023",
+    period: "Jan 2022 – Jan 2023",
     role: "Backend Developer",
     company: "Endava",
     location: "Rosario, Argentina",
