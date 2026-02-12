@@ -2,8 +2,11 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { HiMail, HiPhone, HiLocationMarker } from "react-icons/hi";
+import { HiMail, HiPhone, HiLocationMarker, HiCheck, HiExclamation } from "react-icons/hi";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa";
+
+// Get your free access key at https://web3forms.com/
+const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "YOUR_ACCESS_KEY_HERE";
 
 export default function Contact() {
   const ref = useRef(null);
@@ -13,11 +16,40 @@ export default function Contact() {
     email: "",
     message: "",
   });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const mailtoUrl = `mailto:joaquinperrier@hotmail.com?subject=Portfolio Contact from ${formState.name}&body=${encodeURIComponent(formState.message)}%0A%0AFrom: ${formState.email}`;
-    window.open(mailtoUrl);
+    setStatus("loading");
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          name: formState.name,
+          email: formState.email,
+          message: formState.message,
+          from_name: "Portfolio Contact Form",
+          subject: `New message from ${formState.name}`,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStatus("success");
+        setFormState({ name: "", email: "", message: "" });
+        setTimeout(() => setStatus("idle"), 5000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 5000);
+      }
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 5000);
+    }
   };
 
   return (
@@ -113,11 +145,45 @@ export default function Contact() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-3 bg-primary hover:bg-primary-light text-black font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
+                  disabled={status === "loading"}
+                  className="w-full py-3 bg-primary hover:bg-primary-light text-black font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <HiMail className="w-5 h-5" />
-                  Send Message
+                  {status === "loading" ? (
+                    <>
+                      <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Sending...
+                    </>
+                  ) : status === "success" ? (
+                    <>
+                      <HiCheck className="w-5 h-5" />
+                      Message Sent!
+                    </>
+                  ) : status === "error" ? (
+                    <>
+                      <HiExclamation className="w-5 h-5" />
+                      Error — Try Again
+                    </>
+                  ) : (
+                    <>
+                      <HiMail className="w-5 h-5" />
+                      Send Message
+                    </>
+                  )}
                 </button>
+
+                {status === "success" && (
+                  <p className="text-green-400 text-sm text-center mt-2">
+                    Thanks! I&apos;ll get back to you soon.
+                  </p>
+                )}
+                {status === "error" && (
+                  <p className="text-red-400 text-sm text-center mt-2">
+                    Something went wrong. Please try again or email me directly.
+                  </p>
+                )}
               </form>
             </div>
           </motion.div>

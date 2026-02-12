@@ -85,8 +85,7 @@ export default function About() {
             </p>
 
             <p className="text-gray-400 text-lg leading-relaxed">
-              Currently pursuing Information Systems Engineering at UTN while
-              working with international teams. Passionate about continuous
+              Passionate about continuous
               learning, I stay at the forefront of emerging technologies to
               deliver maintainable solutions.
             </p>
